@@ -1,0 +1,3 @@
+1,Ahmed Ali,pass1234,5000.00
+2,Mohamed Hassan,mypass123,3000.00
+3,Sara Ahmed,secure99,7500.00
