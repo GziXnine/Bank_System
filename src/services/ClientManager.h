@@ -36,31 +36,36 @@
 
 #include <string>
 
-// Forward declarations
+#include "../models/Employee.h"
+
 class Client;
 class Person;
+class Employee;
 
-class ClientManager {
+class ClientManager
+{
 private:
-    ClientManager();  // Prevent instantiation
+  ClientManager();
+  vector<Client> clients; // This could be used for caching clients if desired.
 
 public:
-    // --- Print the client menu options to console ---
-    static void printClientMenu();
+  void loadClients(); // Load Clients For Caching.
 
-    // --- Update password for any Person (polymorphic) ---
-    // Takes Person* so it works for Client, Employee, or Admin.
-    static void updatePassword(Person* person);
+  // Print the client menu options to console
+  static void printClientMenu();
 
-    // --- Authenticate a client by id and password ---
-    // Returns pointer to the authenticated Client, or nullptr if failed.
-    // NOTE: Where does this search? In the file system? In a vector?
-    // This connects to FilesHelper or FileManager for data retrieval.
-    static Client* login(int id, const std::string& password);
+  // Update password for any Person (polymorphic)
+  // Takes Person* so it works for Client, Employee, or Admin.
+  static void updatePassword(Person *person);
 
-    // --- Process a single menu choice for the logged-in client ---
-    // Returns true to continue the menu loop, false to logout.
-    static bool clientOptions(Client* client);
+  // Authenticate a client by id and password
+  // Returns pointer to the authenticated Client, or nullptr if failed.
+  // This connects to FilesHelper or FileManager for data retrieval.
+  Client *login(int id, const std::string &password);
+
+  // Process a single menu choice for the logged-in client
+  // Returns true to continue the menu loop, false to logout.
+  static bool clientOptions(Client *client);
 };
 
 #endif // CLIENTMANAGER_H
