@@ -16,7 +16,8 @@
 
 #include "services/Screens.h"
 
-int main() {
+int main()
+{
     // Single entry point — Screens handles everything.
     Screens::runApp();
     return 0;

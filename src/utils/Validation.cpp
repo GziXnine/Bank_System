@@ -50,11 +50,15 @@ bool Validation::isAlphabetic(const string &str)
   if (str.empty())
     return false;
 
+  bool hasAlpha = false;
   for (unsigned char c : str)
   {
     if (!std::isalpha(c) && c != ' ')
       return false;
+
+    if (std::isalpha(c))
+      hasAlpha = true;
   }
 
-  return true;
+  return hasAlpha;
 }

@@ -43,37 +43,28 @@
 #include <string>
 #include <vector>
 
-// Forward declarations
 class Client;
 class Employee;
 class Admin;
 
-class Parser {
+class Parser
+{
 private:
-    Parser();  // Prevent instantiation
+  Parser();
 
 public:
-    // --- Split a line by delimiter (default: comma) ---
-    // Input:  "1,Ahmed,pass123,5000"
-    // Output: {"1", "Ahmed", "pass123", "5000"}
-    static std::vector<std::string> split(const std::string& line, char delimiter = ',');
+  // Input:  "1,Ahmed,pass123,5000"
+  // Output: {"1", "Ahmed", "pass123", "5000"}
+  static std::vector<std::string> split(const std::string &line, char delimiter = ',');
 
-    // --- Parse a line into a Client object ---
-    // Expected format: "id,name,password,balance"
-    static Client parseToClient(const std::string& line);
+  // Expected format: "id,name,password,balance"
+  static Client parseToClient(const std::string &line);
 
-    // --- Parse a line into an Employee object ---
-    // Expected format: "id,name,password,salary"
-    static Employee parseToEmployee(const std::string& line);
+  // Expected format: "id,name,password,salary"
+  static Employee parseToEmployee(const std::string &line);
 
-    // --- Parse a line into an Admin object ---
-    // Expected format: "id,name,password,salary"
-    static Admin parseToAdmin(const std::string& line);
-
-    /*
-     * CONFIRMED: Comma delimiter is used throughout.
-     * File format: "id,name,password,balance" or "id,name,password,salary"
-     */
+  // Expected format: "id,name,password,salary"
+  static Admin parseToAdmin(const std::string &line);
 };
 
 #endif // PARSER_H

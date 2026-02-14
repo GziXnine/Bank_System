@@ -22,9 +22,10 @@ Employee::Employee(int id, const string &name, const string &password, double sa
   setSalary(salary);
 }
 
-// vector<Client> cleans itself up automatically (RAII).
-// No manual delete needed — this is a benefit of using
-Employee::~Employee() {};
+Employee::~Employee() {
+  // vector<Client> cleans itself up automatically (RAII).
+  // No manual delete needed — this is a benefit of using
+};
 
 double Employee::getSalary() const
 {
@@ -33,38 +34,45 @@ double Employee::getSalary() const
 
 void Employee::setSalary(double salary)
 {
-  if(Validation::isValidSalary(salary))
+  if (Validation::isValidSalary(salary))
     this->salary = salary;
+  else
+    cout << "Invalid salary. Must be at least 5000." << endl;
 }
 
-// Client Management
 void Employee::addClient(Client &client)
 {
-  // TODO: Add client to the clients vector.
-  // Consider: Should you check for duplicate IDs first?
+  clients.push_back(client);
 }
 
 Client *Employee::searchClient(int id)
 {
-  // TODO: Loop through clients vector, find by id.
-  // Return pointer to the found client, or nullptr if not found.
-  //
-  // HINT: Use a range-based for loop with reference:
-  //   for (auto& c : clients) { ... return &c; }
-  // The & is critical — without it, you'd search a copy.
+  for (auto &c : clients)
+  {
+    if (c.getId() == id)
+      return &c;
+  }
+
+  return nullptr;
 }
 
 void Employee::listClient() const
 {
-  // TODO: Loop through clients, call display() on each.
+  for (const auto &c : clients)
+    c.display();
 }
 
-void Employee::editClient(int id, const string &name,
-                          const string &password, double balance)
+void Employee::editClient(int id, const string &name, const string &password, double balance)
 {
-  // TODO: Find client by id (reuse searchClient).
-  // If found, update their fields using setters.
-  // If not found, print error.
+  Client *client = searchClient(id);
+  if (client != nullptr)
+  {
+    client->setName(name);
+    client->setPassword(password);
+    client->setBalance(balance);
+  }
+  else
+    cout << "Client with ID " << id << " not found." << endl;
 }
 
 void Employee::display() const
