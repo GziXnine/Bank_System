@@ -14,69 +14,256 @@
 
 using namespace std;
 
-// --- Print Employee Menu ---
-void EmployeeManager::printEmployeeMenu() {
-    // TODO: Print menu:
-    //   1. Add New Client
-    //   2. List All Clients
-    //   3. Search Client
-    //   4. Edit Client
-    //   5. Display My Info
-    //   6. Logout
+void EmployeeManager::loadEmployees()
+{
+  employees = FilesHelper::getEmployees();
 }
 
-// --- New Client ---
-void EmployeeManager::newClient(Employee* employee) {
-    // TODO:
-    //   1. Prompt for client name, password, initial balance.
-    //   2. Validate all inputs using Validation.
-    //   3. Generate new ID (using FilesHelper::getLast + 1).
-    //   4. Create Client object.
-    //   5. Add to employee's client list via employee->addClient().
-    //   6. Save to file via FileManager or FilesHelper.
+void EmployeeManager::printEmployeeMenu()
+{
+  cout << "1. Add New Client" << endl;
+  cout << "2. List All Clients" << endl;
+  cout << "3. Search Client" << endl;
+  cout << "4. Edit Client Info" << endl;
+  cout << "5. Display My Info" << endl;
+  cout << "6. Logout" << endl;
+  cout << endl;
+
+  cout << "Choose an option: ";
 }
 
-// --- List All Clients ---
-void EmployeeManager::listAllClients(Employee* employee) {
-    // TODO: Call employee->listClient().
+void EmployeeManager::newClient(Employee *employee)
+{
+  string name;
+  string password;
+  string balanceInput;
+  double balance;
+  int newId = FilesHelper::getLast("data/clients_last_id.txt") + 1;
+
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+  while (true)
+  {
+    cout << "Enter client name: ";
+    getline(cin, name);
+
+    if (Validation::isValidName(name))
+      break;
+
+    cout << "Invalid name. Must be 5-20 alphabetic characters." << endl;
+  }
+
+  while (true)
+  {
+    cout << "Enter client password: ";
+    getline(cin, password);
+
+    if (Validation::isValidPassword(password))
+      break;
+
+    cout << "Invalid password. Must be 8-20 characters." << endl;
+  }
+
+  while (true)
+  {
+    cout << "Enter initial balance: ";
+    getline(cin, balanceInput);
+
+    try
+    {
+      balance = stod(balanceInput);
+
+      if (Validation::isValidBalance(balance))
+        break;
+
+      cout << "Invalid balance. Must be a positive number." << endl;
+    }
+    catch (const invalid_argument &)
+    {
+      cout << "Invalid input. Please enter a valid number." << endl;
+    }
+  }
+
+  Client newClient(newId, name, password, balance);
+  employee->addClient(newClient);
+  FilesHelper::saveClient(newClient);
 }
 
-// --- Search For Client ---
-void EmployeeManager::searchForClient(Employee* employee) {
-    // TODO:
-    //   1. Prompt for client id.
-    //   2. Call employee->searchClient(id).
-    //   3. If found, display client info.
-    //   4. If not, print "Client not found."
+void EmployeeManager::listAllClients(Employee *employee)
+{
+  employee->listClient();
 }
 
-// --- Edit Client Info ---
-void EmployeeManager::editClientInfo(Employee* employee) {
-    // TODO:
-    //   1. Prompt for client id to edit.
-    //   2. Search for client.
-    //   3. If found, prompt for new name, password, balance.
-    //   4. Call employee->editClient(id, name, password, balance).
-    //   5. Update the file (save changes).
+void EmployeeManager::searchForClient(Employee *employee)
+{
+  int id;
+  cout << "Enter client ID to search: ";
+  cin >> id;
+
+  Client *client = employee->searchClient(id);
+  if (client != nullptr)
+    client->display();
+  else
+    cout << "Client with ID " << id << " not found." << endl;
 }
 
-// --- Login ---
-Employee* EmployeeManager::login(int id, const string& password) {
-    // TODO: Same pattern as ClientManager::login but for employees.
-    // Read from employees.txt, parse, match id+password.
+void EmployeeManager::editClientInfo(Employee *employee)
+{
+  int id;
+  string name;
+  string password;
+  string balanceInput;
+  double balance;
+
+  cout << "Enter client ID to edit: ";
+  cin >> id;
+
+  Client *client = employee->searchClient(id);
+  if (client == nullptr)
+  {
+    cout << "Client with ID " << id << " not found." << endl;
+    return;
+  }
+
+  cout << "Editing client: " << client->getName() << endl;
+
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+  cout << "Leave field empty to keep current value." << endl;
+  while (true)
+  {
+    cout << "Enter new name: ";
+    getline(cin, name);
+
+    if (name.empty())
+    {
+      name = client->getName();
+      break;
+    }
+
+    if (Validation::isValidName(name))
+      break;
+
+    cout << "Invalid name. Must be 5-20 alphabetic characters." << endl;
+  }
+
+  while (true)
+  {
+    cout << "Enter new password: ";
+    getline(cin, password);
+
+    if (password.empty())
+    {
+      password = client->getPassword();
+      break;
+    }
+
+    if (Validation::isValidPassword(password))
+      break;
+
+    cout << "Invalid password. Must be 8-20 characters." << endl;
+  }
+
+  while (true)
+  {
+    cout << "Enter new balance: ";
+    getline(cin, balanceInput);
+
+    if (balanceInput.empty())
+    {
+      balance = client->getBalance();
+      break;
+    }
+
+    try
+    {
+      balance = stod(balanceInput);
+
+      if (Validation::isValidBalance(balance))
+        break;
+
+      cout << "Invalid balance. Must be a positive number." << endl;
+    }
+    catch (const invalid_argument &)
+    {
+      cout << "Invalid input. Please enter a valid number." << endl;
+    }
+  }
+
+  employee->editClient(id, name, password, balance);
+  FilesHelper::saveClient(*client);
 }
 
-// --- Employee Options ---
-bool EmployeeManager::employeeOptions(Employee* employee) {
-    // TODO:
-    //   1. Call printEmployeeMenu().
-    //   2. Read choice.
-    //   3. Switch:
-    //      case 1: newClient(employee)
-    //      case 2: listAllClients(employee)
-    //      case 3: searchForClient(employee)
-    //      case 4: editClientInfo(employee)
-    //      case 5: employee->display()
-    //      case 6: return false (logout)
-    //   4. Return true.
+Employee *EmployeeManager::login(int id, const string &password)
+{
+  for (Employee &e : employees)
+  {
+    if (e.getId() == id && e.getPassword() == password)
+      return &e;
+  }
+
+  return nullptr;
+}
+
+bool EmployeeManager::employeeOptions(Employee *employee)
+{
+  int choice;
+  string input;
+
+  printEmployeeMenu();
+
+  getline(cin, input);
+
+  try
+  {
+    choice = stoi(input);
+  }
+  catch (const invalid_argument &)
+  {
+    cout << "Invalid choice. Please enter a number." << endl;
+    return true;
+  }
+
+  switch (choice)
+  {
+  case 1:
+  {
+    cout << "Add new client: " << endl;
+    newClient(employee);
+  }
+  break;
+  case 2:
+  {
+    cout << "Listing all clients: " << endl;
+    listAllClients(employee);
+  }
+  break;
+  case 3:
+  {
+    cout << "Searching for client: " << endl;
+    searchForClient(employee);
+  }
+  break;
+  case 4:
+  {
+    cout << "Editing client info: " << endl;
+    editClientInfo(employee);
+  }
+  break;
+  case 5:
+  {
+    cout << "Displaying employee info: " << endl;
+    employee->display();
+  }
+  break;
+
+  default:
+    cout << "Invalid choice. Please try again." << endl;
+    break;
+  }
+
+  if (choice == 6)
+    return false; // Logout
+
+  return true; // Continue the menu loop
 }

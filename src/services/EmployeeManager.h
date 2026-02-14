@@ -33,35 +33,40 @@
 #define EMPLOYEEMANAGER_H
 
 #include <string>
+#include <limits>
 
 class Employee;
 
-class EmployeeManager {
+class EmployeeManager
+{
 private:
-    EmployeeManager();
+  EmployeeManager();
+  vector<Employee> employees;
 
 public:
-    // --- Print the employee menu ---
-    static void printEmployeeMenu();
+  void loadEmployees(); // Load Employees For Caching.
 
-    // --- Add a new client (prompts for input) ---
-    static void newClient(Employee* employee);
+  // Print the employee menu
+  static void printEmployeeMenu();
 
-    // --- List all clients managed by this employee ---
-    static void listAllClients(Employee* employee);
+  // Add a new client (prompts for input)
+  static void newClient(Employee *employee);
 
-    // --- Search for a client by id ---
-    static void searchForClient(Employee* employee);
+  // List all clients managed by this employee
+  static void listAllClients(Employee *employee);
 
-    // --- Edit a client's information ---
-    static void editClientInfo(Employee* employee);
+  // Search for a client by id
+  static void searchForClient(Employee *employee);
 
-    // --- Authenticate an employee ---
-    static Employee* login(int id, const std::string& password);
+  // Edit a client's information
+  static void editClientInfo(Employee *employee);
 
-    // --- Process a single menu choice ---
-    // Returns true to continue, false to logout.
-    static bool employeeOptions(Employee* employee);
+  // Authenticate an employee
+  Employee *login(int id, const std::string &password);
+
+  // Process a single menu choice
+  // Returns true to continue, false to logout.
+  static bool employeeOptions(Employee *employee);
 };
 
 #endif // EMPLOYEEMANAGER_H

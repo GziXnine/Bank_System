@@ -73,10 +73,22 @@ Client *ClientManager::login(int id, const string &password)
 bool ClientManager::clientOptions(Client *client)
 {
   int choice;
+  string input;
 
   printClientMenu();
 
-  cin >> choice;
+  getline(cin, input);
+
+  try
+  {
+    choice = stoi(input);
+  }
+  catch (const invalid_argument &)
+  {
+    cout << "Invalid choice. Please enter a number." << endl;
+    return true;
+  }
+
   switch (choice)
   {
   case 1:
