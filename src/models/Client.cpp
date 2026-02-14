@@ -33,32 +33,34 @@ void Client::setBalance(double balance)
   if (Validation::isValidBalance(balance))
     this->balance = balance;
   else
-    cout << "The Minumim Valid Balance Is 1500 $." << endl;
+    cout << "The Minimum Valid Balance Is 1500 $." << endl;
 }
 
 void Client::deposit(double amount)
 {
   if (Validation::isValidAmount(amount))
     balance += amount;
+  else
+    cout << "Invalid deposit amount. Must be greater than 0." << endl;
 }
 
 bool Client::withdraw(double amount)
 {
-  if (Validation::isValidAmount(amount) && (getBalance() - amount) >= Validation::isValidBalance(balance))
+  if (Validation::isValidAmount(amount) && Validation::isValidBalance(getBalance() - amount))
   {
     balance -= amount;
     return true;
   }
   else
   {
-    cout << "Withdraw Is Invalid, Becuase This Smaller Than Minimum Balance" << endl;
+    cout << "Withdraw Is Invalid, Because This Smaller Than Minimum Balance" << endl;
     return false;
   }
 }
 
 void Client::transferTo(double amount, Client &recipient)
 {
-  if (Client::withdraw(amount))
+  if (withdraw(amount))
     recipient.deposit(amount);
   else
     cout << "Transfer failed: insufficient funds" << endl;

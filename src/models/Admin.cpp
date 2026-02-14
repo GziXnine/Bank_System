@@ -16,32 +16,42 @@ Admin::Admin(int id, const string &name, const string &password, double salary)
 
 Admin::~Admin() {};
 
-// Employee Management
 void Admin::addEmployee(Employee &employee)
 {
-  // TODO: Add employee to employees vector.
-  // Consider: Check for duplicate IDs?
+  employees.push_back(employee);
 }
 
 Employee *Admin::searchEmployee(int id)
 {
-  // TODO: Loop through employees, find by id.
-  // Return pointer or nullptr.
+  for (auto &e : employees)
+  {
+    if (e.getId() == id)
+      return &e;
+  }
+
+  return nullptr;
 }
 
 void Admin::listEmployee() const
 {
-  // TODO: Loop through employees, call display() on each.
+  for (const auto &e : employees)
+    e.display();
 }
 
-void Admin::editEmployee(int id, const string &name,
-                         const string &password, double salary)
+void Admin::editEmployee(int id, const string &name, const string &password, double salary)
 {
-  // TODO: Find employee by id (reuse searchEmployee).
-  // If found, update fields. If not, print error.
+  Employee *employee = searchEmployee(id);
+  if (employee != nullptr)
+  {
+    employee->setName(name);
+    employee->setPassword(password);
+    employee->setSalary(salary);
+  }
+  else
+    cout << "Employee with ID " << id << " not found." << endl;
 }
 
 void Admin::display() const
 {
-  cout << "ID: " << Admin::id << " | Name: " << Admin::name << " | Salary: " << Admin::getSalary() << endl;
+  cout << "ID: " << id << " | Name: " << name << " | Salary: " << getSalary() << endl;
 }

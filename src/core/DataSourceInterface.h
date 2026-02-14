@@ -42,37 +42,29 @@
 
 #include <vector>
 
-// Forward declarations — we only need these as parameter/return types.
-// Full includes go in the .cpp files of classes that implement this.
 class Client;
 class Employee;
 class Admin;
 
-class DataSourceInterface {
+class DataSourceInterface
+{
 public:
-    // --- Virtual Destructor (MANDATORY for abstract base classes) ---
-    virtual ~DataSourceInterface() = default;
+  virtual ~DataSourceInterface() = default;
 
-    // --- Client Operations ---
-    virtual void addClient(const Client& client) = 0;
-    virtual std::vector<Client> getAllClients() = 0;
-    virtual void removeAllClients() = 0;
+  // Client Operations
+  virtual void addClient(const Client &client) = 0;
+  virtual std::vector<Client> getAllClients() = 0;
+  virtual void removeAllClients() = 0;
 
-    // --- Employee Operations ---
-    virtual void addEmployee(const Employee& employee) = 0;
-    virtual std::vector<Employee> getAllEmployees() = 0;
-    virtual void removeAllEmployees() = 0;
+  // Employee Operations
+  virtual void addEmployee(const Employee &employee) = 0;
+  virtual std::vector<Employee> getAllEmployees() = 0;
+  virtual void removeAllEmployees() = 0;
 
-    // --- Admin Operations ---
-    virtual void addAdmin(const Admin& admin) = 0;
-    virtual std::vector<Admin> getAllAdmins() = 0;
-    virtual void removeAllAdmins() = 0;
-
-    /*
-     * CORRECTED: Changed void to vector<T> return types.
-     * This allows managers to process the results (search, display, etc.)
-     * instead of just printing directly from the data layer.
-     */
+  // Admin Operations
+  virtual void addAdmin(const Admin &admin) = 0;
+  virtual std::vector<Admin> getAllAdmins() = 0;
+  virtual void removeAllAdmins() = 0;
 };
 
 #endif // DATASOURCEINTERFACE_H

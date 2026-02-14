@@ -51,56 +51,38 @@
 #include <string>
 #include <vector>
 
-// Forward declarations
 class Client;
 class Employee;
 class Admin;
 
-class FilesHelper {
+class FilesHelper
+{
 private:
-    FilesHelper();  // Prevent instantiation
+  FilesHelper();
 
 public:
-    // --- ID Management ---
-    // Save the last used ID to a file (for auto-increment).
-    static void saveLast(const std::string& fileName, int id);
+  // Save the last used ID to a file (for auto-increment).
+  static void saveLast(const std::string &fileName, int id);
 
-    // Get the last used ID from a file. Returns 0 if file doesn't exist.
-    static int getLast(const std::string& fileName);
+  // Get the last used ID from a file. Returns 0 if file doesn't exist.
+  static int getLast(const std::string &fileName);
 
-    // --- Save Individual Records ---
-    // Append a client record as a line to the clients file.
-    static void saveClient(const Client& c);
+  // Append a client record as a line to the clients file.
+  static void saveClient(const Client &c);
 
-    // Append an employee record to the employees file.
-    // lastIdFile: path to the last-ID file for employees.
-    static void saveEmployee(const std::string& fileName,
-                             const std::string& lastIdFile,
-                             const Employee& e);
+  // Append an employee record to the employees file.
+  static void saveEmployee(const std::string &fileName, const std::string &lastIdFile, const Employee &e);
 
-    // --- Load All Records (returns vectors) ---
-    static std::vector<Client> getClients();
-    static std::vector<Employee> getEmployees();
-    static std::vector<Admin> getAdmins();
+  // Append an admin record to the admins file.
+  static void saveAdmin(const std::string &fileName, const std::string &lastIdFile, const Admin &a);
 
-    // --- Clear file contents and reset the last ID ---
-    static void clearFile(const std::string& fileName,
-                          const std::string& lastIdFile);
+  // Load All Records (returns vectors)
+  static std::vector<Client> getClients();
+  static std::vector<Employee> getEmployees();
+  static std::vector<Admin> getAdmins();
 
-    /*
-     * CLARIFICATION NEEDED:
-     *   The requirements show saveEmployee takes (string fileName,
-     *   string lastIdFile, Employee e). But saveClient takes only (Client c).
-     *   This inconsistency suggests saveClient might have a hardcoded
-     *   filename internally. Clarify the intended API with your instructor.
-     *
-     *   Also: Where is saveAdmin? The requirements don't list it
-     *   explicitly in FilesHelper. Should Admin saving follow the
-     *   same pattern as Employee? Most likely yes.
-     */
-    static void saveAdmin(const std::string& fileName,
-                          const std::string& lastIdFile,
-                          const Admin& a);
+  // Clear file contents and reset the last ID
+  static void clearFile(const std::string &fileName, const std::string &lastIdFile);
 };
 
 #endif // FILESHELPER_H

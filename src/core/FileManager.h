@@ -37,33 +37,33 @@
 #include <string>
 #include <vector>
 
-class FileManager : public DataSourceInterface {
+class FileManager : public DataSourceInterface
+{
 private:
-    // File paths — could be configurable, but hardcoded is fine for now.
-    static const std::string CLIENTS_FILE;
-    static const std::string EMPLOYEES_FILE;
-    static const std::string ADMINS_FILE;
-    static const std::string LAST_CLIENT_ID_FILE;
-    static const std::string LAST_EMPLOYEE_ID_FILE;
-    static const std::string LAST_ADMIN_ID_FILE;
+  static const std::string CLIENTS_FILE;
+  static const std::string EMPLOYEES_FILE;
+  static const std::string ADMINS_FILE;
+  static const std::string LAST_CLIENT_ID_FILE;
+  static const std::string LAST_EMPLOYEE_ID_FILE;
+  static const std::string LAST_ADMIN_ID_FILE;
 
 public:
-    // --- Constructor / Destructor ---
-    FileManager();
-    ~FileManager() override;
+  // Constructor / Destructor
+  FileManager();
+  ~FileManager() override;
 
-    // --- DataSourceInterface Implementation ---
-    void addClient(const Client& client) override;
-    void addEmployee(const Employee& employee) override;
-    void addAdmin(const Admin& admin) override;
+  // DataSourceInterface Implementation
+  void addClient(const Client &client) override;
+  void addEmployee(const Employee &employee) override;
+  void addAdmin(const Admin &admin) override;
 
-    std::vector<Client> getAllClients() override;
-    std::vector<Employee> getAllEmployees() override;
-    std::vector<Admin> getAllAdmins() override;
+  std::vector<Client> getAllClients() override;
+  std::vector<Employee> getAllEmployees() override;
+  std::vector<Admin> getAllAdmins() override;
 
-    void removeAllClients() override;
-    void removeAllEmployees() override;
-    void removeAllAdmins() override;
+  void removeAllClients() override;
+  void removeAllEmployees() override;
+  void removeAllAdmins() override;
 };
 
 #endif // FILEMANAGER_H

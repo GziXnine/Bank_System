@@ -28,6 +28,7 @@
  */
 
 #include "FilesHelper.h"
+#include "Parser.h"
 #include "../models/Client.h"
 #include "../models/Employee.h"
 #include "../models/Admin.h"
@@ -37,62 +38,127 @@
 
 using namespace std;
 
-// --- Save Last ID ---
-void FilesHelper::saveLast(const string& fileName, int id) {
-    // TODO: Write the id to the file (overwrite mode, not append).
-    // This file always contains a single number.
+void FilesHelper::saveLast(const string &fileName, int id)
+{
+  ofstream file(fileName, ios::trunc);
+  if (file.is_open())
+  {
+    file << id;
+    file.close();
+  }
 }
 
-// --- Get Last ID ---
-int FilesHelper::getLast(const string& fileName) {
-    // TODO: Read the single number from the file.
-    // If file doesn't exist or is empty, return 0.
+int FilesHelper::getLast(const string &fileName)
+{
+  ifstream file(fileName);
+  if (file.is_open())
+  {
+    int id;
+    file >> id;
+    file.close();
+    return id;
+  }
+
+  return 0; // File doesn't exist or is empty
 }
 
-// --- Save Client ---
-void FilesHelper::saveClient(const Client& c) {
-    // TODO: Format client as "id,name,password,balance"
-    // Append to the clients file.
-    // Also update the last-ID file.
+void FilesHelper::saveClient(const Client &c)
+{
+  ofstream file("data/clients.txt", ios::app);
+  if (file.is_open())
+  {
+    file << c.getId() << "," << c.getName() << "," << c.getPassword() << "," << c.getBalance() << endl;
+    file.close();
+  }
+
+  saveLast("data/last_client_id.txt", c.getId());
 }
 
-// --- Save Employee ---
-void FilesHelper::saveEmployee(const string& fileName,
-                               const string& lastIdFile,
-                               const Employee& e) {
-    // TODO: Format employee as "id,name,password,salary"
-    // Append to fileName.
-    // Update lastIdFile with the employee's id.
+void FilesHelper::saveEmployee(const string &fileName, const string &lastIdFile, const Employee &e)
+{
+  ofstream file(fileName, ios::app);
+  if (file.is_open())
+  {
+    file << e.getId() << "," << e.getName() << "," << e.getPassword() << "," << e.getSalary() << endl;
+    file.close();
+  }
+
+  saveLast(lastIdFile, e.getId());
 }
 
-// --- Save Admin ---
-void FilesHelper::saveAdmin(const string& fileName,
-                            const string& lastIdFile,
-                            const Admin& a) {
-    // TODO: Same pattern as saveEmployee.
+void FilesHelper::saveAdmin(const string &fileName, const string &lastIdFile, const Admin &a)
+{
+  ofstream file(fileName, ios::app);
+  if (file.is_open())
+  {
+    file << a.getId() << "," << a.getName() << "," << a.getPassword() << "," << a.getSalary() << endl;
+    file.close();
+  }
+
+  saveLast(lastIdFile, a.getId());
 }
 
-// --- Get Clients ---
-std::vector<Client> FilesHelper::getClients() {
-    // TODO: Read all lines from clients.txt.
-    // Parse each line into a Client using Parser::parseToClient().
-    // Push each Client into a vector and return it.
+std::vector<Client> FilesHelper::getClients()
+{
+  vector<Client> clients;
+  ifstream file("data/clients.txt");
+  if (file.is_open())
+  {
+    string line;
+    while (getline(file, line))
+    {
+      clients.push_back(Parser::parseToClient(line));
+    }
+
+    file.close();
+  }
+
+  return clients;
 }
 
-// --- Get Employees ---
-std::vector<Employee> FilesHelper::getEmployees() {
-    // TODO: Same pattern for employees.txt.
-    // Return vector<Employee>.
+std::vector<Employee> FilesHelper::getEmployees()
+{
+  vector<Employee> employees;
+  ifstream file("data/employees.txt");
+  if (file.is_open())
+  {
+    string line;
+    while (getline(file, line))
+    {
+      employees.push_back(Parser::parseToEmployee(line));
+    }
+
+    file.close();
+  }
+
+  return employees;
 }
 
-// --- Get Admins ---
-std::vector<Admin> FilesHelper::getAdmins() {
-    // TODO: Same pattern for admins.txt.
-    // Return vector<Admin>.
+std::vector<Admin> FilesHelper::getAdmins()
+{
+  vector<Admin> admins;
+  ifstream file("data/admins.txt");
+  if (file.is_open())
+  {
+    string line;
+    while (getline(file, line))
+    {
+      admins.push_back(Parser::parseToAdmin(line));
+    }
+
+    file.close();
+  }
+
+  return admins;
 }
 
-// --- Clear File ---
-void FilesHelper::clearFile(const string& fileName, const string& lastIdFile) {
-    // TODO: Open fileName in trunc mode (erases contents).
-    // Reset lastIdFile to 0.
+void FilesHelper::clearFile(const string &fileName, const string &lastIdFile)
+{
+  ofstream file(fileName, ios::trunc);
+  if (file.is_open())
+  {
+    file.close();
+  }
+
+  saveLast(lastIdFile, 0);
 }
