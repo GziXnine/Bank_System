@@ -9,6 +9,7 @@
 #include "../models/Employee.h"
 #include "../models/Admin.h"
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -35,37 +36,82 @@ Client Parser::parseToClient(const string &line)
 {
   vector<string> fields = split(line, ',');
 
-  int id = stoi(fields[0]);
-  double balance = stod(fields[3]);
+  if (fields.size() < 4)
+    throw std::runtime_error("Malformed client line: expected 4 fields");
 
-  if (fields.size() >= 4)
+  try
+  {
+    int id = stoi(fields[0]);
+    double balance = stod(fields[3]);
+
     return Client(id, fields[1], fields[2], balance);
-  else
-    return Client();
+  }
+  catch (const std::invalid_argument &ex)
+  {
+    throw std::runtime_error(string("Invalid numeric value in client fields: ") + ex.what());
+  }
+  catch (const std::out_of_range &ex)
+  {
+    throw std::runtime_error(string("Numeric value out of range in client fields: ") + ex.what());
+  }
+  catch (const std::exception &ex)
+  {
+    throw std::runtime_error(string("Failed to parse client fields: ") + ex.what());
+  }
 }
 
 Employee Parser::parseToEmployee(const string &line)
 {
   vector<string> fields = split(line, ',');
 
-  int id = stoi(fields[0]);
-  double salary = stod(fields[3]);
+  if (fields.size() < 4)
+    throw std::runtime_error("Malformed employee line: expected 4 fields");
 
-  if (fields.size() >= 4)
+  try
+  {
+    int id = stoi(fields[0]);
+    double salary = stod(fields[3]);
+
     return Employee(id, fields[1], fields[2], salary);
-  else
-    return Employee();
+  }
+  catch (const std::invalid_argument &ex)
+  {
+    throw std::runtime_error(string("Invalid numeric value in employee fields: ") + ex.what());
+  }
+  catch (const std::out_of_range &ex)
+  {
+    throw std::runtime_error(string("Numeric value out of range in employee fields: ") + ex.what());
+  }
+  catch (const std::exception &ex)
+  {
+    throw std::runtime_error(string("Failed to parse employee fields: ") + ex.what());
+  }
 }
 
 Admin Parser::parseToAdmin(const string &line)
 {
   vector<string> fields = split(line, ',');
 
-  int id = stoi(fields[0]);
-  double salary = stod(fields[3]);
+  if (fields.size() < 4)
+    throw std::runtime_error("Malformed admin line: expected 4 fields");
 
-  if (fields.size() >= 4)
+  try
+  {
+    int id = stoi(fields[0]);
+    double salary = stod(fields[3]);
+
     return Admin(id, fields[1], fields[2], salary);
-  else
-    return Admin();
+  }
+  catch (const std::invalid_argument &ex)
+  {
+    throw std::runtime_error(string("Invalid numeric value in admin fields: ") + ex.what());
+  }
+  catch (const std::out_of_range &ex)
+  {
+    throw std::runtime_error(string("Numeric value out of range in admin fields: ") + ex.what());
+  }
+  catch (const std::exception &ex)
+  {
+    throw std::runtime_error(string("Failed to parse admin fields: ") + ex.what());
+  }
 }
