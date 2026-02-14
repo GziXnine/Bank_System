@@ -20,50 +20,58 @@
 #include "Person.h"
 #include "../utils/Validation.h"
 
-// In .cpp files, "using namespace std;" is acceptable.
 using namespace std;
 
-// --- Default Constructor ---
-Person::Person() {
-    // TODO: Initialize id to 0, name and password to empty strings.
+Person::Person()
+{
+  this->id = 0;
+  this->name = "";
+  this->password = "";
 }
 
-// --- Parameterized Constructor ---
-Person::Person(int id, const string& name, const string& password) {
-    // TODO: Use setters to assign values (so validation runs).
-    // Set id directly since it has no validation.
+Person::Person(int id, const string &name, const string &password)
+{
+  this->id = id;
+  setName(name);
+  setPassword(password);
 }
 
 // --- Virtual Destructor ---
-Person::~Person() {
-    // Nothing to clean up — no dynamic memory in this class.
-    // But the virtual destructor MUST exist so derived class
-    // destructors are called correctly through base pointers.
+Person::~Person()
+{
+  // Nothing to clean up — no dynamic memory in this class.
+  // But the virtual destructor MUST exist so derived class
+  // destructors are called correctly through base pointers.
 }
 
-// --- Getters ---
-int Person::getId() const {
-    // TODO: Return id.
+int Person::getId() const
+{
+  return id;
 }
 
-const string& Person::getName() const {
-    // TODO: Return name.
+const string &Person::getName() const
+{
+  return name;
 }
 
-const string& Person::getPassword() const {
-    // TODO: Return password.
+// In a real application, you would NEVER return the password like this.
+const string &Person::getPassword() const
+{
+  return password;
 }
 
-// --- Setters ---
-void Person::setName(const string& name) {
-    // TODO: Use Validation::isValidName(name) before assigning.
-    // If invalid, print an error message and do NOT update the field.
+void Person::setName(const string &name)
+{
+  if (Validation::isValidName(name))
+    this->name = name;
+  else
+    cout << "Invalid name. Must be alphabetic only, 5-20 characters." << endl;
 }
 
-void Person::setPassword(const string& password) {
-    // TODO: Use Validation::isValidPassword(password) before assigning.
-    // If invalid, print an error message and do NOT update the field.
+void Person::setPassword(const string &password)
+{
+  if (Validation::isValidPassword(password))
+    this->password = password;
+  else
+    cout << "Invalid password. Must be 8-20 characters." << endl;
 }
-
-// NOTE: display() is pure virtual — no implementation here.
-// Each derived class (Client, Employee, Admin) provides its own.

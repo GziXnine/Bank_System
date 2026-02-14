@@ -39,38 +39,30 @@
 
 #include <string>
 
-class Validation {
+class Validation
+{
 private:
-    // Private constructor — nobody should create a Validation object.
-    Validation();
+  // Private constructor — nobody should create a Validation object.
+  Validation();
 
 public:
-    // --- Name Validation ---
-    // Rules: Alphabetic characters only, min 5, max 20 characters.
-    // Returns true if valid, false otherwise.
-    static bool isValidName(const std::string& name);
+  // Rules: Alphabetic characters only, min 5, max 20 characters.
+  static bool isValidName(const std::string &name);
 
-    // --- Password Validation ---
-    // Rules: Min 8, max 20 characters.
-    // Returns true if valid, false otherwise.
-    static bool isValidPassword(const std::string& password);
+  // Rules: Min 8, max 20 characters.
+  static bool isValidPassword(const std::string &password);
 
-    // --- Balance Validation ---
-    // Rules: Must be >= 1500.
-    static bool isValidBalance(double balance);
+  // Rules: Must be >= 1500.
+  static bool isValidBalance(double balance);
 
-    // --- Salary Validation ---
-    // Rules: Must be >= 5000.
-    static bool isValidSalary(double salary);
+  // Rules: Must be >= 5000.
+  static bool isValidSalary(double salary);
 
-    // --- Amount Validation (for deposit/withdraw) ---
-    // Rules: Must be > 0.
-    static bool isValidAmount(double amount);
+  // Rules: Must be > 0.
+  static bool isValidAmount(double amount);
 
-    // --- Helper: Check if string is all alphabetic (including spaces) ---
-    // Used internally by isValidName.
-    // Public so you can reuse it if needed.
-    static bool isAlphabetic(const std::string& str);
+  // Helper: Check if string is all alphabetic (including spaces)
+  static bool isAlphabetic(const std::string &str);
 };
 
 #endif // VALIDATION_H

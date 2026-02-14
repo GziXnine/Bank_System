@@ -38,43 +38,39 @@
 #include "Person.h"
 #include <string>
 
-class Client : public Person {
+class Client : public Person
+{
 private:
-    double balance;
+  double balance;
 
 public:
-    // --- Constructors ---
-    Client();
-    Client(int id, const std::string& name, const std::string& password, double balance);
+  Client();
+  Client(int id, const std::string &name, const std::string &password, double balance);
 
-    // --- Destructor ---
-    // Virtual inherited from Person. Override is optional but good practice.
-    ~Client() override;
+  ~Client() override;
 
-    // --- Getter ---
-    double getBalance() const;
+  double getBalance() const;
 
-    // --- Setter (with min balance validation: 1500) ---
-    void setBalance(double balance);
+  // with min balance validation: 1500
+  void setBalance(double balance);
 
-    // --- Business Operations ---
-    // deposit: Adds amount to balance. Amount must be positive.
-    void deposit(double amount);
+  // Adds amount to balance. Amount must be positive.
+  void deposit(double amount);
 
-    // withdraw: Subtracts amount from balance.
-    // Must ensure balance doesn't go below minimum (1500).
-    // Returns true if successful, false if insufficient funds.
-    bool withdraw(double amount);
+  // Subtracts amount from balance.
+  // Must ensure balance doesn't go below minimum (1500).
+  // Returns true if successful, false if insufficient funds.
+  bool withdraw(double amount);
 
-    // transferTo: Withdraws from this client, deposits to recipient.
-    // recipient is passed by reference — their balance must change too.
-    void transferTo(double amount, Client& recipient);
+  // Withdraws from this client, deposits to recipient.
+  // recipient is passed by reference — their balance must change too.
+  void transferTo(double amount, Client &recipient);
 
-    // checkBalance: Displays the current balance to the console.
-    void checkBalance() const;
+  // Displays the current balance to the console.
+  void checkBalance() const;
 
-    // --- Display (overrides Person's pure virtual) ---
-    void display() const override;
+  // overrides Person's pure virtual
+  void display() const override;
 };
 
 #endif // CLIENT_H
