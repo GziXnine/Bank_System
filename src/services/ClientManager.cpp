@@ -14,58 +14,121 @@
 
 using namespace std;
 
-// --- Print Client Menu ---
-void ClientManager::printClientMenu() {
-    // TODO: Print menu like:
-    //   1. Deposit
-    //   2. Withdraw
-    //   3. Transfer
-    //   4. Check Balance
-    //   5. Update Password
-    //   6. Logout
+void ClientManager::loadClients()
+{
+  clients = FilesHelper::getClients();
 }
 
-// --- Update Password ---
-void ClientManager::updatePassword(Person* person) {
-    // TODO:
-    //   1. Ask for current password (verify it matches).
-    //   2. Ask for new password.
-    //   3. Validate new password with Validation::isValidPassword().
-    //   4. Call person->setPassword(newPassword).
-    //
-    // WHY Person* and not Client*?
-    //   Because Employees and Admins also need to update passwords.
-    //   By using Person*, this single function works for all three.
-    //   This is polymorphism in action.
+void ClientManager::printClientMenu()
+{
+  cout << "1. Deposit" << endl;
+  cout << "2. Withdraw" << endl;
+  cout << "3. Transfer" << endl;
+  cout << "4. Check Balance" << endl;
+  cout << "5. Update Password" << endl;
+  cout << "6. Logout" << endl;
+  cout << endl;
+
+  cout << "Choose an option: ";
 }
 
-// --- Login ---
-Client* ClientManager::login(int id, const string& password) {
-    // TODO:
-    //   1. Load clients from file (or search in a loaded collection).
-    //   2. Find client with matching id AND password.
-    //   3. Return pointer if found, nullptr if not.
-    //
-    // DESIGN NOTE: This function needs access to stored client data.
-    // It should work with FileManager/FilesHelper to load clients
-    // and search through them.
-    //
-    // CLARIFICATION NEEDED: Should login read from file every time?
-    // Or should there be a cached list? For a file-based system,
-    // reading from file is the simplest approach.
+void ClientManager::updatePassword(Person *person)
+{
+  string currentPassword;
+  string newPassword;
+
+  cout << "Enter current password: ";
+  cin >> currentPassword;
+
+  if (currentPassword != person->getPassword())
+  {
+    cout << "Incorrect current password. Password update failed." << endl;
+    return;
+  }
+
+  cout << "Enter new password: ";
+  cin >> newPassword;
+
+  if (!Validation::isValidPassword(newPassword))
+  {
+    cout << "Invalid password. Must be 8-20 characters." << endl;
+    return;
+  }
+
+  person->setPassword(newPassword);
+  cout << "Password updated successfully." << endl;
 }
 
-// --- Client Options ---
-bool ClientManager::clientOptions(Client* client) {
-    // TODO:
-    //   1. Call printClientMenu().
-    //   2. Read user choice.
-    //   3. Switch on choice:
-    //      case 1: deposit → ask amount, call client->deposit(amount)
-    //      case 2: withdraw → ask amount, call client->withdraw(amount)
-    //      case 3: transfer → ask recipient id + amount, call client->transferTo()
-    //      case 4: client->checkBalance()
-    //      case 5: updatePassword(client)    ← Note: Person* polymorphism!
-    //      case 6: return false (logout)
-    //   4. Return true to keep the menu loop going.
+Client *ClientManager::login(int id, const string &password)
+{
+  for (Client &c : clients)
+  {
+    if (c.getId() == id && c.getPassword() == password)
+      return &c; // Return pointer to the authenticated client
+  }
+
+  return nullptr; // Authentication failed
+}
+
+bool ClientManager::clientOptions(Client *client)
+{
+  int choice;
+
+  printClientMenu();
+
+  cin >> choice;
+  switch (choice)
+  {
+  case 1:
+  {
+    double amount;
+
+    cout << "Enter deposit amount: ";
+    cin >> amount;
+    client->deposit(amount);
+  }
+  break;
+  case 2:
+  {
+    double amount;
+
+    cout << "Enter withdrawal amount: ";
+    cin >> amount;
+    client->withdraw(amount);
+  }
+  break;
+  case 3:
+  {
+    int recipientId;
+    double amount;
+    Employee emp;
+
+    cout << "Enter recipient ID: ";
+    cin >> recipientId;
+    cout << "Enter transfer amount: ";
+    cin >> amount;
+
+    Client *recipient = emp.searchClient(recipientId);
+    if (recipient != nullptr)
+      client->transferTo(amount, recipient);
+    else
+      cout << "Recipient with ID " << recipientId << " not found." << endl;
+  }
+  break;
+  case 4:
+    client->checkBalance();
+    break;
+  case 5:
+    updatePassword(client); // ← Note: Person* polymorphism!
+    break;
+
+  default:
+    cout << "Invalid choice. Please try again." << endl;
+    break;
+  }
+
+  if (choice == 6)
+    return false; // Logout
+
+  return true; // Continue the menu loop
 }

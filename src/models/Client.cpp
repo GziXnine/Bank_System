@@ -58,10 +58,16 @@ bool Client::withdraw(double amount)
   }
 }
 
-void Client::transferTo(double amount, Client &recipient)
+void Client::transferTo(double amount, Client *recipient)
 {
+  if (recipient == nullptr)
+  {
+    cout << "Recipient not found!" << endl;
+    return;
+  }
+
   if (withdraw(amount))
-    recipient.deposit(amount);
+    recipient->deposit(amount);
   else
     cout << "Transfer failed: insufficient funds" << endl;
 }

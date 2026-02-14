@@ -64,7 +64,7 @@ public:
 
   // Withdraws from this client, deposits to recipient.
   // recipient is passed by reference — their balance must change too.
-  void transferTo(double amount, Client &recipient);
+  void transferTo(double amount, Client *recipient);
 
   // Displays the current balance to the console.
   void checkBalance() const;
