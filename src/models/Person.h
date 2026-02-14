@@ -39,47 +39,40 @@
 #ifndef PERSON_H
 #define PERSON_H
 
+#include <iostream>
 #include <string>
 
-// NOTE: We do NOT use "using namespace std;" in headers.
-// Reason: Any file that #includes this header would get the entire
 // std namespace injected — that causes name collisions in large projects.
-// Always use std:: prefix in headers. In .cpp files, "using namespace std;"
-// is acceptable if you prefer.
+// Always use std:: prefix in headers. In .cpp files, "using namespace std;" is acceptable if you prefer.
 
-class Person {
+class Person
+{
 protected:
-    int id;
-    std::string name;
-    std::string password;
+  int id;
+  std::string name;
+  std::string password;
 
 public:
-    // --- Constructors ---
-    Person();
-    Person(int id, const std::string& name, const std::string& password);
+  Person();
+  Person(int id, const std::string &name, const std::string &password);
 
-    // --- Virtual Destructor ---
-    // WHY virtual? Because we will use Person* pointers polymorphically.
-    // Rule: If a class has ANY virtual function, its destructor must be virtual.
-    virtual ~Person();
+  // WHY virtual? Because I will use Person* pointers polymorphically.
+  // Rule: If a class has ANY virtual function, its destructor must be virtual.
+  virtual ~Person();
 
-    // --- Getters (const — they don't modify the object) ---
-    int getId() const;
-    const std::string& getName() const;
-    const std::string& getPassword() const;
+  int getId() const;
+  const std::string &getName() const;
+  const std::string &getPassword() const;
 
-    // --- Setters (with validation — see Validation utility) ---
-    // These call Validation methods internally.
-    // The validation rules are:
-    //   name: alphabetic only, min 5, max 20 characters
-    //   password: min 8, max 20 characters
-    void setName(const std::string& name);
-    void setPassword(const std::string& password);
+  // name: alphabetic only, min 5, max 20 characters
+  // password: min 8, max 20 characters
+  void setName(const std::string &name);
+  void setPassword(const std::string &password);
 
-    // --- Pure Virtual: Forces every derived class to implement display ---
-    // WHY pure virtual? A "Person" has no meaningful display format.
-    // A Client shows balance. An Employee shows salary. They differ.
-    virtual void display() const = 0;
+  // Pure Virtual: Forces every derived class to implement display.
+  // WHY pure virtual? A "Person" has no meaningful display format.
+  // A Client shows balance. An Employee shows salary. They differ.
+  virtual void display() const = 0;
 };
 
 #endif // PERSON_H

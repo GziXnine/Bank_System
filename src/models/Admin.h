@@ -43,31 +43,31 @@
 #include <vector>
 #include <string>
 
-class Admin : public Employee {
+class Admin : public Employee
+{
 private:
-    std::vector<Employee> employees;  // Employees managed by this admin
+  std::vector<Employee> employees;
 
 public:
-    // --- Constructors ---
-    Admin();
-    Admin(int id, const std::string& name, const std::string& password, double salary);
+  Admin();
+  Admin(int id, const std::string &name, const std::string &password, double salary);
 
-    // --- Destructor ---
-    ~Admin() override;
+  ~Admin() override;
 
-    // --- Client Management (inherited from Employee, listed for clarity) ---
-    // addClient, searchClient, listClient, editClient — all inherited.
-    // No need to redeclare unless behavior differs.
+  // Client Management (inherited from Employee, listed for clarity)
+  // addClient, searchClient, listClient, editClient — all inherited.
+  // No need to redeclare unless behavior differs.
 
-    // --- Employee Management (Phase 2, requirement 7) ---
-    void addEmployee(Employee& employee);
-    Employee* searchEmployee(int id);
-    void listEmployee() const;
-    void editEmployee(int id, const std::string& name,
-                      const std::string& password, double salary);
+  // Employee Management (Phase 2, requirement 7)
+  void addEmployee(Employee &employee);
 
-    // --- Display ---
-    void display() const override;
+  Employee *searchEmployee(int id);
+
+  void listEmployee() const;
+
+  void editEmployee(int id, const std::string &name, const std::string &password, double salary);
+
+  void display() const override;
 };
 
 #endif // ADMIN_H

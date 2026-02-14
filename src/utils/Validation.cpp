@@ -17,38 +17,44 @@
 
 using namespace std;
 
-// --- Name Validation ---
-bool Validation::isValidName(const string& name) {
-    // TODO: Check length (5-20) AND isAlphabetic().
-    // Return true only if BOTH conditions pass.
+bool Validation::isValidName(const string &name)
+{
+  if (name.length() < 5 || name.length() > 20)
+    return false;
+
+  return isAlphabetic(name);
 }
 
-// --- Password Validation ---
-bool Validation::isValidPassword(const string& password) {
-    // TODO: Check length (8-20).
+bool Validation::isValidPassword(const string &password)
+{
+  return (password.length() >= 8 && password.length() <= 20);
 }
 
-// --- Balance Validation ---
-bool Validation::isValidBalance(double balance) {
-    // TODO: Return balance >= 1500.
+bool Validation::isValidBalance(double balance)
+{
+  return balance >= 1500.0;
 }
 
-// --- Salary Validation ---
-bool Validation::isValidSalary(double salary) {
-    // TODO: Return salary >= 5000.
+bool Validation::isValidSalary(double salary)
+{
+  return salary >= 5000.0;
 }
 
-// --- Amount Validation ---
-bool Validation::isValidAmount(double amount) {
-    // TODO: Return amount > 0.
+bool Validation::isValidAmount(double amount)
+{
+  return amount > 0.0;
 }
 
-// --- Alphabetic Check ---
-bool Validation::isAlphabetic(const string& str) {
-    // TODO: Loop through each character.
-    // Return false if any char is not alphabetic AND not space.
-    // Return true if all pass.
-    //
-    // CORRECTED: Spaces are ALLOWED in names ("Ahmed Ali").
-    // HINT: for (char c : str) { if (!isalpha(c) && c != ' ') return false; }
+bool Validation::isAlphabetic(const string &str)
+{
+  if (str.empty())
+    return false;
+
+  for (unsigned char c : str)
+  {
+    if (!std::isalpha(c) && c != ' ')
+      return false;
+  }
+
+  return true;
 }

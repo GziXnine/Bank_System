@@ -41,44 +41,37 @@
 #include <vector>
 
 // Forward declaration — avoids circular dependency.
-// We only need Client* (pointer) in the header, not the full definition.
-// The full #include "Client.h" goes in Employee.cpp.
 class Client;
 
-class Employee : public Person {
+class Employee : public Person
+{
 private:
-    double salary;
-    std::vector<Client> clients;  // Clients managed by this employee
+  double salary;
+  std::vector<Client> clients;
 
 public:
-    // --- Constructors ---
-    Employee();
-    Employee(int id, const std::string& name, const std::string& password, double salary);
+  Employee();
+  Employee(int id, const std::string &name, const std::string &password, double salary);
 
-    // --- Destructor ---
-    ~Employee() override;
+  ~Employee() override;
 
-    // --- Getters ---
-    double getSalary() const;
+  double getSalary() const;
 
-    // --- Setters (min salary: 5000) ---
-    void setSalary(double salary);
+  // min salary: 5000
+  void setSalary(double salary);
 
-    // --- Client Management (Phase 2, requirement 6) ---
-    void addClient(Client& client);
+  // Client Management (Phase 2, requirement 6)
+  void addClient(Client &client);
 
-    // Returns pointer to found client, or nullptr if not found.
-    // IMPORTANT: Returns pointer to element in the vector — do NOT
-    // store this pointer long-term, it invalidates if vector resizes.
-    Client* searchClient(int id);
+  // Returns pointer to found client, or nullptr if not found.
+  // IMPORTANT: Returns pointer to element in the vector — do NOT store this pointer long-term, it invalidates if vector resizes.
+  Client *searchClient(int id);
 
-    void listClient() const;
+  void listClient() const;
 
-    void editClient(int id, const std::string& name,
-                    const std::string& password, double balance);
+  void editClient(int id, const std::string &name, const std::string &password, double balance);
 
-    // --- Display ---
-    void display() const override;
+  void display() const override;
 };
 
 #endif // EMPLOYEE_H

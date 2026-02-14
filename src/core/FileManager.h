@@ -57,9 +57,9 @@ public:
     void addEmployee(const Employee& employee) override;
     void addAdmin(const Admin& admin) override;
 
-    void getAllClients() override;
-    void getAllEmployees() override;
-    void getAllAdmins() override;
+    std::vector<Client> getAllClients() override;
+    std::vector<Employee> getAllEmployees() override;
+    std::vector<Admin> getAllAdmins() override;
 
     void removeAllClients() override;
     void removeAllEmployees() override;
