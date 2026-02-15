@@ -81,6 +81,11 @@ public:
   static std::vector<Employee> getEmployees();
   static std::vector<Admin> getAdmins();
 
+  // Update existing records (rewrites entire file)
+  static void updateAllClients(const std::vector<Client> &clients);
+  static void updateAllEmployees(const std::vector<Employee> &employees);
+  static void updateAllAdmins(const std::vector<Admin> &admins);
+
   // Clear file contents and reset the last ID
   static void clearFile(const std::string &fileName, const std::string &lastIdFile);
 };

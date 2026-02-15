@@ -19,7 +19,7 @@ using namespace std;
 void Screens::bankName()
 {
   cout << "======================================" << endl;
-  cout << "          ★  BANK SYSTEM  ★          " << endl;
+  cout << "          *  BANK SYSTEM  *          " << endl;
   cout << "======================================" << endl;
 }
 
@@ -78,7 +78,7 @@ void Screens::logout()
        << endl;
 }
 
-void Screens::loginScreen(int c)
+bool Screens::loginScreen(int c)
 {
   int id;
   string password;
@@ -105,11 +105,13 @@ void Screens::loginScreen(int c)
       {
         // Keep showing menu until logout (returns false)
       }
+      return true;
     }
     else
     {
       cout << "\nLogin failed! Invalid ID or password.\n"
            << endl;
+      return false;
     }
   }
   break;
@@ -126,11 +128,13 @@ void Screens::loginScreen(int c)
       {
         // Keep showing menu until logout
       }
+      return true;
     }
     else
     {
       cout << "\nLogin failed! Invalid ID or password.\n"
            << endl;
+      return false;
     }
   }
   break;
@@ -147,17 +151,20 @@ void Screens::loginScreen(int c)
       {
         // Keep showing menu until logout
       }
+      return true;
     }
     else
     {
       cout << "\nLogin failed! Invalid ID or password.\n"
            << endl;
+      return false;
     }
   }
   break;
 
   default:
     cout << "Unknown user type." << endl;
+    return false;
     break;
   }
 }
@@ -193,8 +200,11 @@ void Screens::runApp()
     }
     else
     {
-      loginScreen(choice);
-      logout();
+      bool loginSuccess = loginScreen(choice);
+      if (loginSuccess)
+      {
+        logout();
+      }
     }
   }
 }

@@ -51,6 +51,11 @@ private:
 public:
   static void loadClients(); // Load Clients For Caching.
 
+  // Access to shared client cache
+  static std::vector<Client> &getAllClients();
+  static void saveAllClients();
+  static Client *findClientById(int id);
+
   // Print the client menu options to console
   static void printClientMenu();
 
