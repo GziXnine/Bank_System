@@ -47,6 +47,11 @@ private:
 public:
   static void loadEmployees(); // Load Employees For Caching.
 
+  // Access to shared employee cache
+  static std::vector<Employee> &getAllEmployees();
+  static void saveAllEmployees();
+  static Employee *findEmployeeById(int id);
+
   // Print the employee menu
   static void printEmployeeMenu();
 

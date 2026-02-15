@@ -60,14 +60,14 @@ int FilesHelper::getLast(const string &fileName)
     if (!(file >> id))
     {
       file.close();
-      return -1; // Failed to read last ID
+      return 0; // Failed to read, start from 0
     }
 
     file.close();
     return id;
   }
 
-  return -1; // File doesn't exist or couldn't be opened
+  return 0; // File doesn't exist, start from 0
 }
 
 void FilesHelper::saveClient(const Client &c)
@@ -203,4 +203,58 @@ void FilesHelper::clearFile(const string &fileName, const string &lastIdFile)
   file.close();
 
   saveLast(lastIdFile, 0);
+}
+
+void FilesHelper::updateAllClients(const std::vector<Client> &clients)
+{
+  const string fileName = "data/clients.txt";
+  ofstream file(fileName, ios::trunc);
+  if (!file.is_open())
+  {
+    cerr << "Error: cannot open '" << fileName << "' for rewriting." << endl;
+    return;
+  }
+
+  for (const auto &c : clients)
+  {
+    file << c.getId() << "," << c.getName() << "," << c.getPassword() << "," << c.getBalance() << endl;
+  }
+
+  file.close();
+}
+
+void FilesHelper::updateAllEmployees(const std::vector<Employee> &employees)
+{
+  const string fileName = "data/employees.txt";
+  ofstream file(fileName, ios::trunc);
+  if (!file.is_open())
+  {
+    cerr << "Error: cannot open '" << fileName << "' for rewriting." << endl;
+    return;
+  }
+
+  for (const auto &e : employees)
+  {
+    file << e.getId() << "," << e.getName() << "," << e.getPassword() << "," << e.getSalary() << endl;
+  }
+
+  file.close();
+}
+
+void FilesHelper::updateAllAdmins(const std::vector<Admin> &admins)
+{
+  const string fileName = "data/admins.txt";
+  ofstream file(fileName, ios::trunc);
+  if (!file.is_open())
+  {
+    cerr << "Error: cannot open '" << fileName << "' for rewriting." << endl;
+    return;
+  }
+
+  for (const auto &a : admins)
+  {
+    file << a.getId() << "," << a.getName() << "," << a.getPassword() << "," << a.getSalary() << endl;
+  }
+
+  file.close();
 }

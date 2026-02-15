@@ -69,7 +69,8 @@ public:
   static void logout();
 
   // c: 1 = Client login, 2 = Employee login, 3 = Admin login
-  static void loginScreen(int c);
+  // Returns: true if login successful, false otherwise
+  static bool loginScreen(int c);
 
   // Main application loop
   // Loop: welcome → loginAs → loginScreen → manager loop → repeat

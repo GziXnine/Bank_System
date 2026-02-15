@@ -8,6 +8,7 @@
 #include "Client.h"
 #include "../utils/Validation.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -77,5 +78,11 @@ void Employee::editClient(int id, const string &name, const string &password, do
 
 void Employee::display() const
 {
-  cout << "ID: " << id << " | Name: " << name << " | Salary: " << salary << endl;
+  cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+  cout << "║   ID   ║        Name          ║     Salary    ║" << endl;
+  cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+  cout << "║ " << setw(6) << left << id
+       << " ║ " << setw(20) << left << name
+       << " ║ " << setw(13) << fixed << setprecision(2) << salary << " ║" << endl;
+  cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
 }

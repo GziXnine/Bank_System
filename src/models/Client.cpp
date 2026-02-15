@@ -7,6 +7,7 @@
 #include "Client.h"
 #include "../utils/Validation.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -74,10 +75,22 @@ void Client::transferTo(double amount, Client *recipient)
 
 void Client::checkBalance() const
 {
-  cout << "Balance: " << balance << "$" << endl;
+  cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+  cout << "║   ID   ║        Name          ║    Balance    ║" << endl;
+  cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+  cout << "║ " << setw(6) << left << id
+       << " ║ " << setw(20) << left << name
+       << " ║ " << setw(13) << fixed << setprecision(2) << balance << " ║" << endl;
+  cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
 }
 
 void Client::display() const
 {
-  cout << "ID: " << id << " | Name: " << name << " | Balance: " << balance << endl;
+  cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+  cout << "║   ID   ║        Name          ║    Balance    ║" << endl;
+  cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+  cout << "║ " << setw(6) << left << id
+       << " ║ " << setw(20) << left << name
+       << " ║ " << setw(13) << fixed << setprecision(2) << balance << " ║" << endl;
+  cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
 }

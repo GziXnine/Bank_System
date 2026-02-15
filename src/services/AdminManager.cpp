@@ -5,6 +5,8 @@
  */
 
 #include "AdminManager.h"
+#include "ClientManager.h"
+#include "EmployeeManager.h"
 #include "../models/Admin.h"
 #include "../models/Employee.h"
 #include "../models/Client.h"
@@ -12,6 +14,7 @@
 #include "../core/Parser.h"
 #include "../utils/Validation.h"
 #include <iostream>
+#include <iomanip>
 #include <limits>
 
 using namespace std;
@@ -78,12 +81,13 @@ bool AdminManager::adminOptions(Admin *admin)
     // Client Management (Admin inherits from Employee, so has these methods)
   case 1:
   {
-    cout << "=== Add New Client ===" << endl;
+    cout << "\n=== Add New Client ===\n"
+         << endl;
     string name, password, balanceInput;
     double balance;
     int newId = FilesHelper::getLast("data/last_client_id.txt") + 1;
 
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
     while (true)
     {
@@ -121,7 +125,7 @@ bool AdminManager::adminOptions(Admin *admin)
     }
 
     Client newClient(newId, name, password, balance);
-    admin->addClient(newClient);
+    ClientManager::getAllClients().push_back(newClient);
     FilesHelper::saveClient(newClient);
 
     cout << "Client added successfully with ID: " << newId << endl;
@@ -130,22 +134,56 @@ bool AdminManager::adminOptions(Admin *admin)
 
   case 2:
   {
-    cout << "=== All Clients ===" << endl;
-    admin->listClient();
+    vector<Client> &allClients = ClientManager::getAllClients();
+
+    if (allClients.empty())
+    {
+      cout << "\nNo clients found.\n"
+           << endl;
+    }
+    else
+    {
+      cout << "\n";
+      cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+      cout << "║   ID   ║        Name          ║    Balance    ║" << endl;
+      cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+
+      for (const auto &c : allClients)
+      {
+        cout << "║ " << setw(6) << left << c.getId()
+             << " ║ " << setw(20) << left << c.getName()
+             << " ║ " << setw(13) << fixed << setprecision(2) << c.getBalance() << " ║" << endl;
+      }
+
+      cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
+      cout << endl;
+    }
   }
   break;
 
   case 3:
   {
     int id;
-    cout << "Enter client ID to search: ";
+    cout << "\nEnter client ID to search: ";
     cin >> id;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
-    Client *client = admin->searchClient(id);
+    Client *client = ClientManager::findClientById(id);
     if (client != nullptr)
-      client->display();
+    {
+      cout << "\n";
+      cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+      cout << "║   ID   ║        Name          ║    Balance    ║" << endl;
+      cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+      cout << "║ " << setw(6) << left << client->getId()
+           << " ║ " << setw(20) << left << client->getName()
+           << " ║ " << setw(13) << fixed << setprecision(2) << client->getBalance() << " ║" << endl;
+      cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
+      cout << endl;
+    }
     else
-      cout << "Client with ID " << id << " not found." << endl;
+      cout << "\nClient with ID " << id << " not found.\n"
+           << endl;
   }
   break;
 
@@ -155,23 +193,25 @@ bool AdminManager::adminOptions(Admin *admin)
     string name, password, balanceInput;
     double balance;
 
-    cout << "Enter client ID to edit: ";
+    cout << "\nEnter client ID to edit: ";
     cin >> id;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
-    Client *client = admin->searchClient(id);
+    Client *client = ClientManager::findClientById(id);
     if (client == nullptr)
     {
-      cout << "Client with ID " << id << " not found." << endl;
+      cout << "\nClient with ID " << id << " not found.\n"
+           << endl;
       break;
     }
 
-    cout << "Editing client: " << client->getName() << endl;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << "Leave field empty to keep current value." << endl;
+    cout << "\nEditing client: " << client->getName() << endl;
+    cout << "Leave field empty to keep current value.\n"
+         << endl;
 
     while (true)
     {
-      cout << "Enter new name: ";
+      cout << "Enter new name (current: " << client->getName() << "): ";
       getline(cin, name);
       if (name.empty())
       {
@@ -199,7 +239,7 @@ bool AdminManager::adminOptions(Admin *admin)
 
     while (true)
     {
-      cout << "Enter new balance: ";
+      cout << "Enter new balance (current: " << client->getBalance() << "): ";
       getline(cin, balanceInput);
       if (balanceInput.empty())
       {
@@ -219,8 +259,10 @@ bool AdminManager::adminOptions(Admin *admin)
       }
     }
 
-    admin->editClient(id, name, password, balance);
-    FilesHelper::saveClient(*client);
+    client->setName(name);
+    client->setPassword(password);
+    client->setBalance(balance);
+    ClientManager::saveAllClients();
     cout << "Client updated successfully." << endl;
   }
   break;
@@ -228,12 +270,13 @@ bool AdminManager::adminOptions(Admin *admin)
     // Employee Management
   case 5:
   {
-    cout << "=== Add New Employee ===" << endl;
+    cout << "\n=== Add New Employee ===\n"
+         << endl;
     string name, password, salaryInput;
     double salary;
     int newId = FilesHelper::getLast("data/last_employee_id.txt") + 1;
 
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
     while (true)
     {
@@ -271,7 +314,7 @@ bool AdminManager::adminOptions(Admin *admin)
     }
 
     Employee newEmployee(newId, name, password, salary);
-    admin->addEmployee(newEmployee);
+    EmployeeManager::getAllEmployees().push_back(newEmployee);
     FilesHelper::saveEmployee("data/employees.txt", "data/last_employee_id.txt", newEmployee);
     cout << "Employee added successfully with ID: " << newId << endl;
   }
@@ -279,22 +322,56 @@ bool AdminManager::adminOptions(Admin *admin)
 
   case 6:
   {
-    cout << "=== All Employees ===" << endl;
-    admin->listEmployee();
+    vector<Employee> &allEmployees = EmployeeManager::getAllEmployees();
+
+    if (allEmployees.empty())
+    {
+      cout << "\nNo employees found.\n"
+           << endl;
+    }
+    else
+    {
+      cout << "\n";
+      cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+      cout << "║   ID   ║        Name          ║     Salary    ║" << endl;
+      cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+
+      for (const auto &e : allEmployees)
+      {
+        cout << "║ " << setw(6) << left << e.getId()
+             << " ║ " << setw(20) << left << e.getName()
+             << " ║ " << setw(13) << fixed << setprecision(2) << e.getSalary() << " ║" << endl;
+      }
+
+      cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
+      cout << endl;
+    }
   }
   break;
 
   case 7:
   {
     int id;
-    cout << "Enter employee ID to search: ";
+    cout << "\nEnter employee ID to search: ";
     cin >> id;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
-    Employee *employee = admin->searchEmployee(id);
+    Employee *employee = EmployeeManager::findEmployeeById(id);
     if (employee != nullptr)
-      employee->display();
+    {
+      cout << "\n";
+      cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+      cout << "║   ID   ║        Name          ║     Salary    ║" << endl;
+      cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+      cout << "║ " << setw(6) << left << employee->getId()
+           << " ║ " << setw(20) << left << employee->getName()
+           << " ║ " << setw(13) << fixed << setprecision(2) << employee->getSalary() << " ║" << endl;
+      cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
+      cout << endl;
+    }
     else
-      cout << "Employee with ID " << id << " not found." << endl;
+      cout << "\nEmployee with ID " << id << " not found.\n"
+           << endl;
   }
   break;
 
@@ -304,23 +381,25 @@ bool AdminManager::adminOptions(Admin *admin)
     string name, password, salaryInput;
     double salary;
 
-    cout << "Enter employee ID to edit: ";
+    cout << "\nEnter employee ID to edit: ";
     cin >> id;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
-    Employee *employee = admin->searchEmployee(id);
+    Employee *employee = EmployeeManager::findEmployeeById(id);
     if (employee == nullptr)
     {
-      cout << "Employee with ID " << id << " not found." << endl;
+      cout << "\nEmployee with ID " << id << " not found.\n"
+           << endl;
       break;
     }
 
-    cout << "Editing employee: " << employee->getName() << endl;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << "Leave field empty to keep current value." << endl;
+    cout << "\nEditing employee: " << employee->getName() << endl;
+    cout << "Leave field empty to keep current value.\n"
+         << endl;
 
     while (true)
     {
-      cout << "Enter new name: ";
+      cout << "Enter new name (current: " << employee->getName() << "): ";
       getline(cin, name);
       if (name.empty())
       {
@@ -348,7 +427,7 @@ bool AdminManager::adminOptions(Admin *admin)
 
     while (true)
     {
-      cout << "Enter new salary: ";
+      cout << "Enter new salary (current: " << employee->getSalary() << "): ";
       getline(cin, salaryInput);
       if (salaryInput.empty())
       {
@@ -368,8 +447,10 @@ bool AdminManager::adminOptions(Admin *admin)
       }
     }
 
-    admin->editEmployee(id, name, password, salary);
-    FilesHelper::saveEmployee("data/employees.txt", "data/last_employee_id.txt", *employee);
+    employee->setName(name);
+    employee->setPassword(password);
+    employee->setSalary(salary);
+    EmployeeManager::saveAllEmployees();
 
     cout << "Employee updated successfully." << endl;
   }
@@ -377,7 +458,7 @@ bool AdminManager::adminOptions(Admin *admin)
 
   case 9:
   {
-    cout << "=== Admin Info ===" << endl;
+    cout << "\n=== Admin Info ===" << endl;
     admin->display();
   }
   break;
