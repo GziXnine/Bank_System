@@ -15,9 +15,17 @@
  */
 
 #include "services/Screens.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 int main()
 {
+#ifdef _WIN32
+    // Set Windows console to UTF-8 for proper box-drawing characters
+    SetConsoleOutputCP(65001);
+#endif
+
     // Single entry point — Screens handles everything.
     Screens::runApp();
     return 0;

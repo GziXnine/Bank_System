@@ -11,6 +11,8 @@
 #include "../core/Parser.h"
 #include "../utils/Validation.h"
 #include <iostream>
+#include <iomanip>
+#include <limits>
 
 using namespace std;
 
@@ -20,6 +22,26 @@ std::vector<Client> ClientManager::clients;
 void ClientManager::loadClients()
 {
   clients = FilesHelper::getClients();
+}
+
+std::vector<Client> &ClientManager::getAllClients()
+{
+  return clients;
+}
+
+void ClientManager::saveAllClients()
+{
+  FilesHelper::updateAllClients(clients);
+}
+
+Client *ClientManager::findClientById(int id)
+{
+  for (auto &c : clients)
+  {
+    if (c.getId() == id)
+      return &c;
+  }
+  return nullptr;
 }
 
 void ClientManager::printClientMenu()
@@ -42,6 +64,7 @@ void ClientManager::updatePassword(Person *person)
 
   cout << "Enter current password: ";
   cin >> currentPassword;
+  cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
   if (currentPassword != person->getPassword())
   {
@@ -51,6 +74,7 @@ void ClientManager::updatePassword(Person *person)
 
   cout << "Enter new password: ";
   cin >> newPassword;
+  cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
   if (!Validation::isValidPassword(newPassword))
   {
@@ -60,6 +84,12 @@ void ClientManager::updatePassword(Person *person)
 
   person->setPassword(newPassword);
   cout << "Password updated successfully." << endl;
+
+  // Save changes to file
+  if (dynamic_cast<Client *>(person))
+  {
+    saveAllClients();
+  }
 }
 
 Client *ClientManager::login(int id, const string &password)
@@ -100,7 +130,9 @@ bool ClientManager::clientOptions(Client *client)
 
     cout << "Enter deposit amount: ";
     cin >> amount;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
     client->deposit(amount);
+    saveAllClients(); // Save changes to file
   }
   break;
   case 2:
@@ -109,7 +141,11 @@ bool ClientManager::clientOptions(Client *client)
 
     cout << "Enter withdrawal amount: ";
     cin >> amount;
-    client->withdraw(amount);
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
+    if (client->withdraw(amount))
+    {
+      saveAllClients(); // Save changes to file
+    }
   }
   break;
   case 3:
@@ -121,6 +157,7 @@ bool ClientManager::clientOptions(Client *client)
     cin >> recipientId;
     cout << "Enter transfer amount: ";
     cin >> amount;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
     Client *recipient = nullptr;
     for (auto &c : clients)
@@ -133,7 +170,10 @@ bool ClientManager::clientOptions(Client *client)
     }
 
     if (recipient != nullptr && recipient != client)
+    {
       client->transferTo(amount, recipient);
+      saveAllClients(); // Save changes to file
+    }
     else if (recipient == client)
       cout << "Cannot transfer to yourself!" << endl;
     else

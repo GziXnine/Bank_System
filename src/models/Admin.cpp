@@ -6,6 +6,7 @@
 
 #include "Admin.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -53,5 +54,11 @@ void Admin::editEmployee(int id, const string &name, const string &password, dou
 
 void Admin::display() const
 {
-  cout << "ID: " << id << " | Name: " << name << " | Salary: " << getSalary() << endl;
+  cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+  cout << "║   ID   ║        Name          ║     Salary    ║" << endl;
+  cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+  cout << "║ " << setw(6) << left << id
+       << " ║ " << setw(20) << left << name
+       << " ║ " << setw(13) << fixed << setprecision(2) << getSalary() << " ║" << endl;
+  cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
 }

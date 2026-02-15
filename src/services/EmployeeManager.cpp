@@ -5,12 +5,14 @@
  */
 
 #include "EmployeeManager.h"
+#include "ClientManager.h"
 #include "../models/Employee.h"
 #include "../models/Client.h"
 #include "../core/FilesHelper.h"
 #include "../core/Parser.h"
 #include "../utils/Validation.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -20,6 +22,26 @@ std::vector<Employee> EmployeeManager::employees;
 void EmployeeManager::loadEmployees()
 {
   employees = FilesHelper::getEmployees();
+}
+
+std::vector<Employee> &EmployeeManager::getAllEmployees()
+{
+  return employees;
+}
+
+void EmployeeManager::saveAllEmployees()
+{
+  FilesHelper::updateAllEmployees(employees);
+}
+
+Employee *EmployeeManager::findEmployeeById(int id)
+{
+  for (auto &e : employees)
+  {
+    if (e.getId() == id)
+      return &e;
+  }
+  return nullptr;
 }
 
 void EmployeeManager::printEmployeeMenu()
@@ -37,13 +59,18 @@ void EmployeeManager::printEmployeeMenu()
 
 void EmployeeManager::newClient(Employee *employee)
 {
+  (void)employee; // Parameter unused - using shared cache instead
+
   string name;
   string password;
   string balanceInput;
   double balance;
-  int newId = FilesHelper::getLast("data/clients_last_id.txt") + 1;
+  int newId = FilesHelper::getLast("data/last_client_id.txt") + 1;
 
-  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  cout << "\n=== Add New Client ===\n"
+       << endl;
+
+  cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
   while (true)
   {
@@ -88,54 +115,101 @@ void EmployeeManager::newClient(Employee *employee)
   }
 
   Client newClient(newId, name, password, balance);
-  employee->addClient(newClient);
+
+  // Add to shared client cache
+  ClientManager::getAllClients().push_back(newClient);
+
+  // Save to file and update last ID
   FilesHelper::saveClient(newClient);
+
+  cout << "Client added successfully with ID: " << newId << endl;
 }
 
 void EmployeeManager::listAllClients(Employee *employee)
 {
-  employee->listClient();
+  (void)employee; // Parameter unused - using shared cache instead
+
+  vector<Client> &allClients = ClientManager::getAllClients();
+
+  if (allClients.empty())
+  {
+    cout << "\nNo clients found.\n"
+         << endl;
+    return;
+  }
+
+  cout << "\n";
+  cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+  cout << "║   ID   ║        Name          ║    Balance    ║" << endl;
+  cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+
+  for (const auto &c : allClients)
+  {
+    cout << "║ " << setw(6) << left << c.getId()
+         << " ║ " << setw(20) << left << c.getName()
+         << " ║ " << setw(13) << fixed << setprecision(2) << c.getBalance() << " ║" << endl;
+  }
+
+  cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
+  cout << endl;
 }
 
 void EmployeeManager::searchForClient(Employee *employee)
 {
-  int id;
-  cout << "Enter client ID to search: ";
-  cin >> id;
+  (void)employee; // Parameter unused - using shared cache instead
 
-  Client *client = employee->searchClient(id);
+  int id;
+  cout << "\nEnter client ID to search: ";
+  cin >> id;
+  cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
+
+  Client *client = ClientManager::findClientById(id);
   if (client != nullptr)
-    client->display();
+  {
+    cout << "\n";
+    cout << "╔════════╦══════════════════════╦═══════════════╗" << endl;
+    cout << "║   ID   ║        Name          ║    Balance    ║" << endl;
+    cout << "╠════════╬══════════════════════╬═══════════════╣" << endl;
+    cout << "║ " << setw(6) << left << client->getId()
+         << " ║ " << setw(20) << left << client->getName()
+         << " ║ " << setw(13) << fixed << setprecision(2) << client->getBalance() << " ║" << endl;
+    cout << "╚════════╩══════════════════════╩═══════════════╝" << endl;
+    cout << endl;
+  }
   else
-    cout << "Client with ID " << id << " not found." << endl;
+    cout << "\nClient with ID " << id << " not found.\n"
+         << endl;
 }
 
 void EmployeeManager::editClientInfo(Employee *employee)
 {
+  (void)employee; // Parameter unused - using shared cache instead
+
   int id;
   string name;
   string password;
   string balanceInput;
   double balance;
 
-  cout << "Enter client ID to edit: ";
+  cout << "\nEnter client ID to edit: ";
   cin >> id;
+  cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear buffer
 
-  Client *client = employee->searchClient(id);
+  Client *client = ClientManager::findClientById(id);
   if (client == nullptr)
   {
-    cout << "Client with ID " << id << " not found." << endl;
+    cout << "\nClient with ID " << id << " not found.\n"
+         << endl;
     return;
   }
 
-  cout << "Editing client: " << client->getName() << endl;
+  cout << "\nEditing client: " << client->getName() << endl;
+  cout << "Leave field empty to keep current value.\n"
+       << endl;
 
-  cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-  cout << "Leave field empty to keep current value." << endl;
   while (true)
   {
-    cout << "Enter new name: ";
+    cout << "Enter new name (current: " << client->getName() << "): ";
     getline(cin, name);
 
     if (name.empty())
@@ -169,7 +243,7 @@ void EmployeeManager::editClientInfo(Employee *employee)
 
   while (true)
   {
-    cout << "Enter new balance: ";
+    cout << "Enter new balance (current: " << client->getBalance() << "): ";
     getline(cin, balanceInput);
 
     if (balanceInput.empty())
@@ -185,7 +259,7 @@ void EmployeeManager::editClientInfo(Employee *employee)
       if (Validation::isValidBalance(balance))
         break;
 
-      cout << "Invalid balance. Must be a positive number." << endl;
+      cout << "Invalid balance. Must be at least 1500." << endl;
     }
     catch (const invalid_argument &)
     {
@@ -193,8 +267,15 @@ void EmployeeManager::editClientInfo(Employee *employee)
     }
   }
 
-  employee->editClient(id, name, password, balance);
-  FilesHelper::saveClient(*client);
+  // Update client in cache
+  client->setName(name);
+  client->setPassword(password);
+  client->setBalance(balance);
+
+  // Save all clients to file
+  ClientManager::saveAllClients();
+
+  cout << "Client updated successfully!" << endl;
 }
 
 Employee *EmployeeManager::login(int id, const string &password)
@@ -255,7 +336,7 @@ bool EmployeeManager::employeeOptions(Employee *employee)
   break;
   case 5:
   {
-    cout << "Displaying employee info: " << endl;
+    cout << "\n=== Employee Info ===" << endl;
     employee->display();
   }
   break;
