@@ -37,7 +37,7 @@
  *           └── AdminManager (admin workflow)
  *                 ├── Models (Person, Client, Employee, Admin)
  *                 └── Core (FileManager, FilesHelper, Parser)
- *                       └── data/*.txt (persistence)
+ *                       └── data/ *.txt (persistence)
  *
  *   Dependencies flow DOWNWARD only. Models never depend on Services.
  *   Services never depend on Screens. This is clean architecture.
@@ -48,39 +48,32 @@
 #ifndef SCREENS_H
 #define SCREENS_H
 
-class Screens {
+class Screens
+{
 private:
-    Screens();
+  Screens();
 
 public:
-    // --- Display bank name / logo ---
-    static void bankName();
+  static void bankName();
 
-    // --- Display welcome message ---
-    static void welcome();
+  static void welcome();
 
-    // --- Display login type options (Client/Employee/Admin) ---
-    static void loginOptions();
+  static void loginOptions();
 
-    // --- Get the user's login type choice ---
-    // Returns: 1 = Client, 2 = Employee, 3 = Admin
-    static int loginAs();
+  // Returns: 1 = Client, 2 = Employee, 3 = Admin
+  static int loginAs();
 
-    // --- Display invalid input message ---
-    // c = the invalid value entered
-    static void invalid(int c);
+  // c = the invalid value entered
+  static void invalid(int c);
 
-    // --- Display logout message ---
-    static void logout();
+  static void logout();
 
-    // --- Route to the correct login screen based on user type ---
-    // c: 1 = Client login, 2 = Employee login, 3 = Admin login
-    static void loginScreen(int c);
+  // c: 1 = Client login, 2 = Employee login, 3 = Admin login
+  static void loginScreen(int c);
 
-    // --- Main application loop ---
-    // This is where everything starts. Called from main().
-    // Loop: welcome → loginAs → loginScreen → manager loop → repeat
-    static void runApp();
+  // Main application loop
+  // Loop: welcome → loginAs → loginScreen → manager loop → repeat
+  static void runApp();
 };
 
 #endif // SCREENS_H
