@@ -37,11 +37,9 @@
 #define EMPLOYEE_H
 
 #include "Person.h"
+#include "Client.h"
 #include <string>
 #include <vector>
-
-// Forward declaration — avoids circular dependency.
-class Client;
 
 class Employee : public Person
 {
