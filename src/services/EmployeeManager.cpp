@@ -14,6 +14,9 @@
 
 using namespace std;
 
+// Static member definition
+std::vector<Employee> EmployeeManager::employees;
+
 void EmployeeManager::loadEmployees()
 {
   employees = FilesHelper::getEmployees();
@@ -256,14 +259,16 @@ bool EmployeeManager::employeeOptions(Employee *employee)
     employee->display();
   }
   break;
+  case 6:
+  {
+    cout << "Logging out..." << endl;
+    return false;
+  }
 
   default:
     cout << "Invalid choice. Please try again." << endl;
     break;
   }
-
-  if (choice == 6)
-    return false; // Logout
 
   return true; // Continue the menu loop
 }

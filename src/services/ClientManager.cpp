@@ -14,6 +14,9 @@
 
 using namespace std;
 
+// Static member definition
+std::vector<Client> ClientManager::clients;
+
 void ClientManager::loadClients()
 {
   clients = FilesHelper::getClients();
@@ -113,16 +116,26 @@ bool ClientManager::clientOptions(Client *client)
   {
     int recipientId;
     double amount;
-    Employee emp;
 
     cout << "Enter recipient ID: ";
     cin >> recipientId;
     cout << "Enter transfer amount: ";
     cin >> amount;
 
-    Client *recipient = emp.searchClient(recipientId);
-    if (recipient != nullptr)
+    Client *recipient = nullptr;
+    for (auto &c : clients)
+    {
+      if (c.getId() == recipientId)
+      {
+        recipient = &c;
+        break;
+      }
+    }
+
+    if (recipient != nullptr && recipient != client)
       client->transferTo(amount, recipient);
+    else if (recipient == client)
+      cout << "Cannot transfer to yourself!" << endl;
     else
       cout << "Recipient with ID " << recipientId << " not found." << endl;
   }
@@ -133,14 +146,16 @@ bool ClientManager::clientOptions(Client *client)
   case 5:
     updatePassword(client); // ← Note: Person* polymorphism!
     break;
+  case 6:
+  {
+    cout << "Logging out..." << endl;
+    return false;
+  }
 
   default:
     cout << "Invalid choice. Please try again." << endl;
     break;
   }
-
-  if (choice == 6)
-    return false; // Logout
 
   return true; // Continue the menu loop
 }

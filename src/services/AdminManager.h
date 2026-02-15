@@ -33,26 +33,27 @@
 #define ADMINMANAGER_H
 
 #include <string>
+#include <vector>
 
 class Admin;
 class Client;
 
-class AdminManager {
+class AdminManager
+{
 private:
-    AdminManager();
+  AdminManager();
+  static std::vector<Admin> admins; // Static for caching
 
 public:
-    // --- Print the admin/employee menu ---
-    // NOTE: Requirements say "printEmployeeMenu" here. This likely means
-    // the admin menu includes employee management options.
-    static void printAdminMenu();
+  static void loadAdmins(); // Load Admins For Caching
 
-    // --- Authenticate an admin ---
-    static Admin* login(int id, const std::string& password);
+  // Print the admin/employee menu
+  static void printAdminMenu();
 
-    // --- Process admin menu choice ---
-    // CORRECTED: Changed from Client* to Admin* (requirements had a typo).
-    static bool adminOptions(Admin* admin);
+  static Admin *login(int id, const std::string &password);
+
+  // CORRECTED: Changed from Client* to Admin* (requirements had a typo).
+  static bool adminOptions(Admin *admin);
 };
 
 #endif // ADMINMANAGER_H

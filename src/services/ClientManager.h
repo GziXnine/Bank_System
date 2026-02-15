@@ -35,7 +35,7 @@
 #define CLIENTMANAGER_H
 
 #include <string>
-
+#include <vector>
 #include "../models/Employee.h"
 
 class Client;
@@ -46,10 +46,10 @@ class ClientManager
 {
 private:
   ClientManager();
-  vector<Client> clients; // This could be used for caching clients if desired.
+  static std::vector<Client> clients; // Static for caching across calls
 
 public:
-  void loadClients(); // Load Clients For Caching.
+  static void loadClients(); // Load Clients For Caching.
 
   // Print the client menu options to console
   static void printClientMenu();
@@ -61,7 +61,7 @@ public:
   // Authenticate a client by id and password
   // Returns pointer to the authenticated Client, or nullptr if failed.
   // This connects to FilesHelper or FileManager for data retrieval.
-  Client *login(int id, const std::string &password);
+  static Client *login(int id, const std::string &password);
 
   // Process a single menu choice for the logged-in client
   // Returns true to continue the menu loop, false to logout.

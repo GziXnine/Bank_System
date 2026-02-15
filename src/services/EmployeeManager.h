@@ -33,6 +33,7 @@
 #define EMPLOYEEMANAGER_H
 
 #include <string>
+#include <vector>
 #include <limits>
 
 class Employee;
@@ -41,10 +42,10 @@ class EmployeeManager
 {
 private:
   EmployeeManager();
-  vector<Employee> employees;
+  static std::vector<Employee> employees; // Static for caching
 
 public:
-  void loadEmployees(); // Load Employees For Caching.
+  static void loadEmployees(); // Load Employees For Caching.
 
   // Print the employee menu
   static void printEmployeeMenu();
@@ -62,7 +63,7 @@ public:
   static void editClientInfo(Employee *employee);
 
   // Authenticate an employee
-  Employee *login(int id, const std::string &password);
+  static Employee *login(int id, const std::string &password);
 
   // Process a single menu choice
   // Returns true to continue, false to logout.
